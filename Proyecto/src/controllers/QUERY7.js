@@ -4,28 +4,23 @@ exports.query7 = async (req, res) => {
     const script = `
         SELECT
             edad,
-            COUNT(*) AS cantidad,
-            ROW_NUMBER() OVER (ORDER BY edad DESC) AS posicion
-        FROM (
-            SELECT DISTINCT C.edad
-            FROM TSE.CIUDADANO C
-            INNER JOIN TSE.VOTO V ON C.dpi = V.dpi
-            ORDER BY C.edad DESC
-            LIMIT 10
-        ) AS edades_unicas
+            COUNT(*) AS CantidadPersonasVotaron
+        FROM TSE.CIUDADANO C
+        INNER JOIN TSE.VOTO V ON C.dpi = V.dpi
         GROUP BY edad
-        ORDER BY edad DESC;
+        ORDER BY CantidadPersonasVotaron DESC
+        LIMIT 10;
     `;
 
     try {
         // Ejecutar la consulta SQL
         const results = await db.query(script, []);
 
-        // Formatear los resultados en un objeto JSON
-        const formattedResults = results.map(result => ({
-            Posicion: result.posicion,
+        // Agregar la posición en el "Top 10"
+        const formattedResults = results.map((result, index) => ({
+            Top: index + 1,
             Edad: result.edad,
-            Cantidad: result.cantidad
+            CantidadPersonasVotaron: result.CantidadPersonasVotaron
         }));
 
         res.status(200).json({
