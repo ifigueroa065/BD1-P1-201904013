@@ -1,42 +1,38 @@
 # :satellite: MANUAL TÉCNICO 
 
-El curso de Organización de Lenguajes y Compiladores 1, perteneciente a la
-Facultad de Ingeniería de la Universidad de San Carlos de Guatemala, ha quedado
-satisfecho con el programa EXREGAN (que previamente ha entregado), por lo que
-nuevamente se interesan en usted para generar el lenguaje TypeWise, que será un
-intérprete para que los estudiantes de Introducción a la Programación y
-Computación 1 utilicen para sus primeras prácticas.
+Este proyecto se plantea como un plan piloto que busca simular y perfeccionar los procedimientos electorales, con el objetivo de lograr elecciones futuras más eficientes y transparentes.
 
 
-## :file_folder: TypeWise
-Es un analizador que interpreta instrucciones para un
-lenguaje de programación que utiliza las sentencias basicas usadas en
-cualquier otro lenguaje. La aplicación funciona enviando peticiones desde el Frontend
-(construido con angular) hacia el Backend (desarrollado con Node.js ) esperando la respuesta
-del mismo para poder mostrar los resultados del análisis del archivo de entrada
+##  :construction: HERRAMIENTAS :construction:
 
+- :ballot_box_with_check:  NodeJs
+- :ballot_box_with_check:  Mysql
+- :ballot_box_with_check:  postman
 
-### :file_folder: Backend (Analizador)
+## ESTRUCTURA BÁSICA DE API
+- :file_folder: src
+    - :open_file_folder: controllers  | Aquí se encuentran los archivos controladores que manejan las solicitudes HTTP.
+    - :open_file_folder: db
+        - Este directorio alberga los archivos relacionados con la base de datos.
+            - `conexion.js`: Archivo de conexión a la base de datos.
+            - `config.js`: Archivo de configuración de la base de datos.
+    - :open_file_folder: routes | En esta carpeta se encuentran los archivos de rutas de la API.
+- :page_facing_up: app.js | El archivo principal de la aplicación que configura y ejecuta el servidor.
+- :page_facing_up: index.js | Este archivo inicia la aplicación y escucha las solicitudes HTTP.
 
-1.  :open_file_folder: BASES-TW (API)
-2.  :page_facing_up: gramatica.jison 
-3.  :page_facing_up: arbol.jison 
+### Descripción de Carpetas y Archivos
+- :open_file_folder: controllers: Aquí se guardan los archivos controladores que gestionan la lógica de la API. Cada controlador debería manejar un conjunto específico de rutas o recursos.
 
-### :file_folder: Frontend (Interfaz)
-####  :file_folder: src (código fuente)
- 1.  :open_file_folder: app (estructura)
- 2.  :open_file_folder: assets (recursos)
- 2.  :page_facing_up: index.html (interfaz)
+-  :open_file_folder: db: Este directorio contiene archivos relacionados con la base de datos. conexion.js se encarga de establecer la conexión con la base de datos, y config.js almacena la configuración de la base de datos, como la URL y las credenciales de acceso.
 
+- :open_file_folder: routes: En esta carpeta, se definen las rutas de la API. Cada archivo de ruta debería especificar las rutas y los controladores asociados a ellas.
 
-##  :construction: Entorno de Desarrollo :construction:
+- :page_facing_up: app.js: Este archivo es el punto de entrada principal de la aplicación. Aquí se configuran los middleware, se establece el servidor HTTP y se importan las rutas.
 
-- :ballot_box_with_check: Lenguajes: Javascript/Typescript. 
-- :ballot_box_with_check: Framework: Angular
-- :ballot_box_with_check: Entorno: Node.js
-- :ballot_box_with_check: Espacio en memoria:   20 MB min.
-- :ballot_box_with_check: Versión de Graphviz:    graphviz version 7.1.0 (20230121.1956)
-- :ballot_box_with_check: Librerias Graphviz, Jison, CORS y express
+- :page_facing_up: index.js: Este archivo es responsable de iniciar la aplicación y hacerla escuchar en un puerto específico. Es elarchivo global de la API
+  
+- :page_facing_up: .env: este archivo contiene las variables de entorno de la aplicación, como la URL de la base de datos y el puerto en el que se ejecuta la aplicación.
+
 
 ## :recycle: Levantar proyecto :recycle:
 
@@ -48,96 +44,112 @@ npm install
 ```
 
 
-si fuera necesario se emplea 
-```sh
-npm audit fix
+
+
+### SCRIPT CREADO PARA ESTE MODELO
+
+```mysql
+-- CREAR BASE DE DATOS
+
+CREATE SCHEMA IF NOT EXISTS TSE;
+
+--  TABLA CIUDADANO
+
+CREATE TABLE IF NOT EXISTS TSE.CIUDADANO (
+  dpi VARCHAR(13)  NOT NULL,
+  nombre VARCHAR(50) NOT NULL,
+  apellido VARCHAR(50) NOT NULL,
+  edad INT NOT NULL,
+  genero CHAR(1) NOT NULL,
+  direccion VARCHAR(100) NOT NULL,
+  telefono VARCHAR(10) NOT NULL,
+  PRIMARY KEY (dpi));
+
+-- TABLA DEPARTAMENTO
+
+CREATE TABLE IF NOT EXISTS TSE.DEPARTAMENTO (
+  id_dep INTEGER NOT NULL PRIMARY KEY ,
+  nombre VARCHAR(25) NOT NULL
+);
+
+
+-- TABLA CARGO
+
+CREATE TABLE IF NOT EXISTS TSE.CARGO (
+    id_cargo INTEGER NOT NULL PRIMARY KEY,
+    cargo VARCHAR(100) NOT NULL
+);
+
+
+-- TABLA PARTIDO
+
+CREATE TABLE IF NOT EXISTS TSE.PARTIDO (
+  id_partido INTEGER NOT NULL PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL,
+  siglas VARCHAR(50) NOT NULL,
+  fundacion DATE NOT NULL
+);
+
+-- TABLA MESA
+
+CREATE TABLE IF NOT EXISTS TSE.MESA (
+  id_mesa INTEGER NOT NULL PRIMARY KEY,
+  id_dep INTEGER NOT NULL,
+  CONSTRAINT FK_depto FOREIGN KEY (id_dep) REFERENCES TSE.DEPARTAMENTO(id_dep)
+);
+
+-- TABLA CANDIDATO
+
+CREATE TABLE IF NOT EXISTS TSE.CANDIDATO (
+  id_candidato INTEGER NOT NULL PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL,
+  fecha_nac DATE NOT NULL,
+  id_cargo INTEGER NOT NULL,
+  id_partido INTEGER NOT NULL,
+  CONSTRAINT FK_cargo FOREIGN KEY (id_cargo) REFERENCES TSE.CARGO(id_cargo),
+  CONSTRAINT FK_partido FOREIGN KEY (id_partido) REFERENCES TSE.PARTIDO(id_partido)
+
+);
+
+
+-- TABLA VOTO
+
+CREATE TABLE IF NOT EXISTS TSE.VOTO (
+  idvoto INTEGER NOT NULL PRIMARY KEY,
+  fechahora DATETIME NOT NULL,
+  dpi VARCHAR(13) NOT NULL,
+  id_mesa INTEGER NOT NULL,
+  CONSTRAINT FK_ciudadano FOREIGN KEY (dpi) REFERENCES TSE.CIUDADANO (dpi),
+  CONSTRAINT FK_mesa FOREIGN KEY (id_mesa) REFERENCES TSE.MESA (id_mesa)
+);
+
+
+-- TABLA DETALLE VOTO
+
+CREATE TABLE IF NOT EXISTS TSE.DETALLE_VOTO (
+  id_detalle INTEGER AUTO_INCREMENT  PRIMARY KEY,
+  idvoto INTEGER NOT NULL,
+  id_candidato INTEGER NOT NULL,
+  CONSTRAINT FK_idvoto FOREIGN KEY (idvoto) REFERENCES TSE.VOTO (idvoto),
+  CONSTRAINT FK_candi FOREIGN KEY (id_candidato) REFERENCES TSE.CANDIDATO (id_candidato)
+);
 ```
-posteriormente se levanta el backend y el frontend con el siguiente comando
-> **Nota:** En backend a nivel de index.js y en Frontend a nivel de index.html
-```sh
-npm start
-```
-
-si quieres saber como compilar la gramática del interprete debes ejecutar este comando donde tengas tus archivos .jison
-```sh
-jison gramatica.jison
-```
-
-> **Nota:** Al momento de compilar algún archivo jison es común que la ejecución de scripts esté deshabilitada en tu sistema operativo... el siguiente blog te ayudará a habilitar los permisos necesarios :)  https://www.cdmon.com/es/blog/la-ejecucion-de-scripts-esta-deshabilitada-en-este-sistema-te-contamos-como-actuar
 
 
-##  :name_badge: Lectura :name_badge:
 
-Para una lectura rapida del archivo de entrada se utilizó la herramienta Jison, creando gramaticas en la misma. Los archivos utilizados para este proceso son gramatica.jison y arbol.jison
+## ENTIDADES 📖
 
-##  :eight_spoked_asterisk: Interprete :eight_spoked_asterisk:
-
-El programa lee caracter por caracter el archivo de entrada, el cual deberá de tener una extensión de tipo (tw) , si un caracter no cumple con la estructura definida en el programa se creará una sección con el detalle de errores
-
-### Se implementaron varias clases de este tipo para posteriormente crear objetos y almacenarlos
-
-```js
-class Clase{
-    constructor(name, listaParametros, instruction, _return, row, column){
-        this.id = name
-        this.parametros = listaParametros
-        this.instruction = instruction
-        this.return = _return
-        this.row = row
-        this.column = column
-    }
-}
-
-module.exports = Clase
-```
-###  Esta clase extrae la informacion de las instrucciones y va procesando cada uno de sus valores
-
-```js
-//* Constructor de Instrucciones
-
-const TIPO_INSTRUCCION = require("../Reserved/TipoInstruccion")
-const TIPO_VALOR = require("../Reserved/TipoValor")
-
-                                    //? Tipo de instruccion
-
-const Instruction = {
-    declaracionp: function(_tipodato, _id, _valor, _linea, _columna){
-        return {
-            tipodato: _tipodato,                
-            id: _id,
-            valor: _valor,
-            linea: _linea,
-            columna: _columna,
-            tipo: TIPO_INSTRUCCION.DECLARACIONP
-        }
-    },
-    asignacionv: function(_id, _expresion, _linea, _columna){
-        return {
-            id: _id,
-            expresion: _expresion,
-            linea: _linea,
-            columna: _columna,
-            tipo: TIPO_INSTRUCCION.ASIGNACIONV
-        }
-    }
-}
-module.exports = Instruction
-```
-
-
-## Diccionario 📖
-
-Función |  Definición 
+NOMBRE |  Definición 
 ------------ | -------------
-`Backend` | Su función es acceder a la información que se solicita, a través de la app, para luego combinarla y devolverla al usuario final
-`Frontend` | Frontend es la parte de un sitio web que interactúa con los usuarios, por eso decimos que está del lado del cliente. 
-`Package.json` | El paquete package.json es el corazón de cualquier proyecto de Node, registra metadatos importantes sobre un proyecto que se requiere
-`Dependencias` | Paquetes que necesitamos en un proyecto mientras estamos desarrollándolo, pero una vez tenemos el código generado del proyecto, no vuelven a hacer falta.
-`Framework` | Es un marco o esquema de trabajo generalmente utilizado por programadores para realizar el desarrollo de software
-`Components` | Un componente en Angular es un elemento que está compuesto por: Un archivo que será nuestro Template (app. component. html), el cual es nuestro HTML, que es el que se va a visualizar en la interfaz de usuario, la vista o en términos más simples lo que vas a ver en la página.
-`Services` | Un servicio es una clase, comúnmente decorada con el decorador Injector de Angular, mismo que indica que este Servicio puede inyectar otras dependencias de la aplicación, ya sean otros servicios como el de Http para hacer consultas AJAX.
-`Peticion` | La petición o HTTP request es el mensaje que se envía desde el cliente al servidor para solicitar un resource.
-`CRUD` | CRUD (Create, Read, Update, Delete) es un acrónimo para las maneras en las que se puede operar sobre información almacenada. Es un nemónico para las cuatro funciones del almacenamiento persistente.
+`CIUDADANO` | Su función es acceder a la información que se solicita, a través de la app, para luego combinarla y devolverla al usuario final
+`VOTO` | Frontend es la parte de un sitio web que interactúa con los usuarios, por eso decimos que está del lado del cliente. 
+`DETALLE_VOTO` | El paquete package.json es el corazón de cualquier proyecto de Node, registra metadatos importantes sobre un proyecto que se requiere
+`CARGO` | Paquetes que necesitamos en un proyecto mientras estamos desarrollándolo, pero una vez tenemos el código generado del proyecto, no vuelven a hacer falta.
+`CANDIDATO` | Es un marco o esquema de trabajo generalmente utilizado por programadores para realizar el desarrollo de software
+`PARTIDO` | Un componente en Angular es un elemento que está compuesto por: Un archivo que será nuestro Template (app. component. html), el cual es nuestro HTML, que es el que se va a visualizar en la interfaz de usuario, la vista o en términos más simples lo que vas a ver en la página.
+`MESA` | Un servicio es una clase, comúnmente decorada con el decorador Injector de Angular, mismo que indica que este Servicio puede inyectar otras dependencias de la aplicación, ya sean otros servicios como el de Http para hacer consultas AJAX.
+`DEPARTAMENTO` | La petición o HTTP request es el mensaje que se envía desde el cliente al servidor para solicitar un resource.
+
 
 
 ```
