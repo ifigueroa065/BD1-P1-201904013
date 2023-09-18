@@ -136,19 +136,60 @@ CREATE TABLE IF NOT EXISTS TSE.DETALLE_VOTO (
 ```
 
 
+# Modelo Relacional de la Base de Datos TSE
 
-## ENTIDADES 📖
+## Tabla CIUDADANO
+- Almacena información sobre los ciudadanos que votan en las elecciones.
+- Clave primaria: `dpi` (Documento Personal de Identificación).
+- Campos: `nombre`, `apellido`, `edad`, `genero`, `direccion`, y `telefono`.
 
-NOMBRE |  Definición 
------------- | -------------
-`CIUDADANO` | Su función es acceder a la información que se solicita, a través de la app, para luego combinarla y devolverla al usuario final
-`VOTO` | Frontend es la parte de un sitio web que interactúa con los usuarios, por eso decimos que está del lado del cliente. 
-`DETALLE_VOTO` | El paquete package.json es el corazón de cualquier proyecto de Node, registra metadatos importantes sobre un proyecto que se requiere
-`CARGO` | Paquetes que necesitamos en un proyecto mientras estamos desarrollándolo, pero una vez tenemos el código generado del proyecto, no vuelven a hacer falta.
-`CANDIDATO` | Es un marco o esquema de trabajo generalmente utilizado por programadores para realizar el desarrollo de software
-`PARTIDO` | Un componente en Angular es un elemento que está compuesto por: Un archivo que será nuestro Template (app. component. html), el cual es nuestro HTML, que es el que se va a visualizar en la interfaz de usuario, la vista o en términos más simples lo que vas a ver en la página.
-`MESA` | Un servicio es una clase, comúnmente decorada con el decorador Injector de Angular, mismo que indica que este Servicio puede inyectar otras dependencias de la aplicación, ya sean otros servicios como el de Http para hacer consultas AJAX.
-`DEPARTAMENTO` | La petición o HTTP request es el mensaje que se envía desde el cliente al servidor para solicitar un resource.
+## Tabla DEPARTAMENTO
+- Almacena información sobre los departamentos geográficos.
+- Clave primaria: `id_dep`.
+- Campo: `nombre` (nombre del departamento).
+
+## Tabla CARGO
+- Almacena información sobre los diferentes cargos que pueden ser elegidos en una elección.
+- Clave primaria: `id_cargo`.
+- Campo: `cargo` (nombre del cargo).
+
+## Tabla PARTIDO
+- Almacena información sobre los partidos políticos.
+- Clave primaria: `id_partido`.
+- Campos: `nombre`, `siglas`, y `fundacion` (fecha de fundación).
+
+## Tabla MESA
+- Almacena información sobre las mesas de votación.
+- Clave primaria: `id_mesa`.
+- Clave foránea: `id_dep` (relaciona con la tabla DEPARTAMENTO).
+
+## Tabla CANDIDATO
+- Almacena información sobre los candidatos que participan en una elección.
+- Clave primaria: `id_candidato`.
+- Campos: `nombre`, `fecha_nac`, `id_cargo`, y `id_partido`.
+- Claves foráneas: `id_cargo` (relaciona con la tabla CARGO) y `id_partido` (relaciona con la tabla PARTIDO).
+
+## Tabla VOTO
+- Almacena información sobre los votos emitidos por los ciudadanos.
+- Clave primaria: `idvoto`.
+- Campos: `fechahora`, `dpi`, y `id_mesa`.
+- Claves foráneas: `dpi` (relaciona con la tabla CIUDADANO) y `id_mesa` (relaciona con la tabla MESA).
+
+## Tabla DETALLE VOTO
+- Almacena detalles sobre los votos emitidos, incluyendo a qué candidato se ha votado en cada voto.
+- Clave primaria: `id_detalle`.
+- Campos: `idvoto` e `id_candidato`.
+- Claves foráneas: `idvoto` (relaciona con la tabla VOTO) y `id_candidato` (relaciona con la tabla CANDIDATO).
+
+### Relaciones:
+- `CIUDADANO.dpi` está relacionada con `VOTO.dpi` mediante la clave foránea.
+- `DEPARTAMENTO.id_dep` está relacionada con `MESA.id_dep` mediante la clave foránea.
+- `CARGO.id_cargo` está relacionada con `CANDIDATO.id_cargo` mediante la clave foránea.
+- `PARTIDO.id_partido` está relacionada con `CANDIDATO.id_partido` mediante la clave foránea.
+- `CIUDADANO.dpi` está relacionada con `VOTO.dpi` mediante la clave foránea.
+- `MESA.id_mesa` está relacionada con `VOTO.id_mesa` mediante la clave foránea.
+- `VOTO.idvoto` está relacionada con `DETALLE VOTO.idvoto` mediante la clave foránea.
+- `CANDIDATO.id_candidato` está relacionada con `DETALLE VOTO.id_candidato` mediante la clave foránea.
 
 
 
