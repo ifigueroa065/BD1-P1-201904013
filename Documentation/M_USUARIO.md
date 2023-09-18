@@ -23,10 +23,10 @@ Este proyecto se plantea como un plan piloto que busca simular y perfeccionar lo
    | QUERY10  | /consulta10 |
    | QUERY11  | /consulta11 |
    | Carga masiva de datos a tabla temporal    | /cargartabtemp|
-   | Eliminar las tablas de la base de datos (modelo de datos) | /eliminarmodelo|
-    | Crear tablas del modelo  | /crearmodelo|
+   | Eliminar las tablas de la base de datos (modelo de datos) | /eliminarmodelo |
+   | Crear tablas del modelo  | /crearmodelo |
    
   
 ## - POSTMAN 
 
-![](https://github.com/ifigueroa065/_OLC1_Proyecto2_201904013/blob/main/Documentation/assets/img1.png)
+![](https://github.com/ifigueroa065/BD1-P1-201904013/blob/main/Documentation/ASSETS/POST.png)
