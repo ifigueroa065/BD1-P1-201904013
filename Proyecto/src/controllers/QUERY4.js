@@ -3,7 +3,7 @@ const db = require('../db/conexion');
 exports.query4 = async (req, res) => {
     const script = `
         SELECT P.nombre AS partido,
-               SUM(CASE WHEN C.id_cargo IN (1, 2, 3, 6) THEN 1 ELSE 0 END) AS cantidad_candidatos
+               SUM(CASE WHEN C.id_cargo IN (1, 2, 6) OR (C.id_cargo IN (3, 4, 5)) THEN 1 ELSE 0 END) AS cantidad_candidatos
         FROM TSE.CANDIDATO C
         INNER JOIN TSE.PARTIDO P ON C.id_partido = P.id_partido
         GROUP BY P.nombre;
@@ -21,7 +21,7 @@ exports.query4 = async (req, res) => {
 
         res.status(200).json({
             res: true,
-            message: 'QUERY4 - SUCCESSFULLY', 
+            message: 'QUERY21 - SUCCESSFULLY', 
             data: formattedResults
         });
     } catch (error) {

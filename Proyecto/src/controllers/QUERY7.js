@@ -2,10 +2,19 @@ const db = require('../db/conexion');
 
 exports.query7 = async (req, res) => {
     const script = `
-        SELECT dpi, nombre, apellido, edad
-        FROM TSE.CIUDADANO
-        ORDER BY edad DESC
-        LIMIT 10;
+        SELECT
+            edad,
+            COUNT(*) AS cantidad,
+            ROW_NUMBER() OVER (ORDER BY edad DESC) AS posicion
+        FROM (
+            SELECT DISTINCT C.edad
+            FROM TSE.CIUDADANO C
+            INNER JOIN TSE.VOTO V ON C.dpi = V.dpi
+            ORDER BY C.edad DESC
+            LIMIT 10
+        ) AS edades_unicas
+        GROUP BY edad
+        ORDER BY edad DESC;
     `;
 
     try {
@@ -14,10 +23,9 @@ exports.query7 = async (req, res) => {
 
         // Formatear los resultados en un objeto JSON
         const formattedResults = results.map(result => ({
-            dpi: result.dpi,
-            nombre: result.nombre,
-            apellido: result.apellido,
-            edad: result.edad
+            Posicion: result.posicion,
+            Edad: result.edad,
+            Cantidad: result.cantidad
         }));
 
         res.status(200).json({

@@ -72,7 +72,7 @@ exports.crearTabtemp = async (req, res) => {
 
     -- TABLA VOTO
 
-    CREATE TABLE IF NOT EXISTS TSE.TEMP_VOTO (
+    CREATE TEMPORARY TABLE TSE.TEMP_VOTO (
         idvoto INTEGER NOT NULL ,
         fechahora DATETIME NOT NULL,
         dpi VARCHAR(13) NOT NULL,
@@ -82,7 +82,7 @@ exports.crearTabtemp = async (req, res) => {
 
     -- TABLA DETALLE VOTO
 
-    CREATE TABLE IF NOT EXISTS TSE.TEMP_DETALLE_VOTO (
+    CREATE TEMPORARY TABLE TSE.TEMP_DETALLE_VOTO (
         idvoto INTEGER NOT NULL,
         id_candidato INTEGER NOT NULL
     );
@@ -295,12 +295,9 @@ exports.crearTabtemp = async (req, res) => {
             const c_dpi = fields[2] || 0;
             const fechahora = fields[4] || '01/01/2023 11:47';
             
-           
             // Insertar los datos en la tabla temporal
             await db.querywithoutclose(connection, `INSERT INTO TSE.TEMP_VOTO(idvoto, fechahora, dpi, id_mesa) VALUES (?, STR_TO_DATE(?, '%d/%m/%Y %T'), ?, ?)`, [idvoto, fechahora, c_dpi, m_id]);    
             
-           
-           
         }
 
         const tempVOTData = await db.querywithoutclose(connection, `SELECT * FROM TSE.TEMP_VOTO`, []);
@@ -318,9 +315,7 @@ exports.crearTabtemp = async (req, res) => {
             const fields = linesdvoto[i].split(',');       
             const idvoto = fields[0] || 0; 
             const id_candidato = fields[1] || 0;
-           
-            
-           
+          
             // Insertar los datos en la tabla temporal
             await db.querywithoutclose(connection, `INSERT INTO TSE.TEMP_DETALLE_VOTO(idvoto, id_candidato) VALUES (?, ?)`, [idvoto, id_candidato]);    
             

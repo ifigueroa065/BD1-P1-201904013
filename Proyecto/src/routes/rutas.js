@@ -25,8 +25,7 @@ const { query11 } = require('../controllers/QUERY11');
 
 //* RUTAS DEL PROYECTO
 router.get('/crearmodelo',modeloTSE)
-router.get('/borrarmodelo',borrarTSE)
-router.get('/cargartabtemp',crearTabtemp)
+router.get('/eliminarmodelo',borrarTSE)
 router.get('/cargartabtemp',crearTabtemp)
 router.get('/consulta1',query1)
 router.get('/consulta2',query2)
